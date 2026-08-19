@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1,
+      maximum-scale=1,
+      user-scalable=no,
+      viewport-fit=cover">
+
+<meta name="theme-color" content="#06111f">
+
+<title>🌍 Terre Future — 2026 → 1 000 000</title>
+
+<style>
+/* =========================================================
+   TERRE FUTURE
+   Interface mobile autonome
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #06111f;
+  color: white;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ================= HEADER ================= */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    16px
+    12px;
+
+  background: rgba(6,17,31,.94);
+  backdrop-filter: blur(15px);
+
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.logo {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.status {
+  font-size: 11px;
+  color: #9eb5cc;
+
+  border: 1px solid #29425c;
+  border-radius: 20px;
+
+  padding: 6px 9px;
+}
+
+/* ================= CONTENU ================= */
+
+main {
+  width: min(100%, 1000px);
+  margin: auto;
+  padding: 10px 12px 30px;
+}
+
+/* ================= GLOBE ================= */
+
+.globe-area {
+  position: relative;
+
+  width: 100%;
+  height: min(65vh, 620px);
+
+  min-height: 310px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  touch-action: none;
+}
+
+#globe {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  touch-action: none;
+}
+
+/* ================= BOUTON CENTRAL ================= */
+
+#launchButton {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 10;
+
+  min-width: 205px;
+
+  padding: 17px 22px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: white;
+  color: #06111f;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.45),
+    0 0 30px rgba(100,190,255,.15);
+}
+
+#launchButton:active {
+  transform: translate(-50%, -50%) scale(.96);
+}
+
+/* ================= PANNEAU ================= */
+
+.panel {
+  background: #0c1b2d;
+
+  border: 1px solid #203a55;
+
+  border-radius: 20px;
+
+  padding: 15px;
+
+  box-shadow: 0 10px 40px rgba(0,0,0,.18);
+}
+
+/* ================= ANNÉE ================= */
+
+.year-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.year {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.scenario-name {
+  color: #9db4cb;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.small-button {
+  border: 1px solid #2b4865;
+  background: #13273d;
+  color: white;
+
+  padding: 10px 12px;
+
+  border-radius: 12px;
+
+  font-weight: 700;
+}
+
+.small-button:active {
+  transform: scale(.97);
+}
+
+/* ================= CURSEUR ================= */
+
+.timeline {
+  width: 100%;
+
+  margin-top: 14px;
+  margin-bottom: 5px;
+
+  accent-color: #63b8ff;
+}
+
+/* ================= CONTRÔLES ================= */
+
+.controls {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 8px;
+
+  margin-top: 9px;
+}
+
+.control {
+  min-height: 45px;
+
+  border: 1px solid #2b4865;
+
+  border-radius: 12px;
+
+  background: #13273d;
+
+  color: white;
+
+  font-weight: 750;
+}
+
+.control:active {
+  transform: scale(.98);
+}
+
+select.control {
+  padding: 0 10px;
+}
+
+/* ================= INDICATEURS ================= */
+
+.metrics {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.metric {
+  background: #081523;
+
+  border-radius: 14px;
+
+  padding: 12px;
+}
+
+.metric-value {
+  font-size: 21px;
+  font-weight: 900;
+
+  margin-bottom: 3px;
+}
+
+.metric-label {
+  color: #94abc1;
+
+  font-size: 11px;
+
+  line-height: 1.3;
+}
+
+/* ================= INFO ================= */
+
+.info {
+  margin-top: 11px;
+
+  padding: 11px;
+
+  border-radius: 12px;
+
+  background: rgba(75,140,190,.08);
+
+  color: #94abc1;
+
+  font-size: 11px;
+
+  line-height: 1.45;
+}
+
+/* ================= DESKTOP ================= */
+
+@media (min-width: 700px) {
+
+  main {
+    padding: 20px;
+  }
+
+  .globe-area {
+    height: 600px;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .controls {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">🌍 Terre Future</div>
+  <div class="status">Simulation interactive</div>
+</header>
+
+<main>
+
+  <!-- =====================================================
+       GLOBE
+       ===================================================== -->
+
+  <section class="globe-area">
+
+    <canvas id="globe"></canvas>
+
+    <button id="launchButton">
+      ▶ Lancer la simulation
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+       PANNEAU DE CONTRÔLE
+       ===================================================== -->
+
+  <section class="panel">
+
+    <div class="year-line">
+
+      <div>
+        <div id="year" class="year">
+          2026
+        </div>
+
+        <div id="scenarioName" class="scenario-name">
+          Scénario intermédiaire
+        </div>
+      </div>
+
+      <button id="resetButton" class="small-button">
+        ↺ 2026
+      </button>
+
+    </div>
+
+
+    <!-- Curseur temporel -->
+
+    <input
+      id="timeline"
+      class="timeline"
+      type="range"
+      min="2026"
+      max="1000000"
+      step="1"
+      value="2026"
+    >
+
+
+    <!-- Contrôles -->
+
+    <div class="controls">
+
+      <button id="playButton" class="control">
+        ▶ Lecture
+      </button>
+
+      <button id="pauseButton" class="control">
+        ⏸ Pause
+      </button>
+
+      <select id="scenario" class="control">
+
+        <option value="low">
+          🌱 Transition rapide
+        </option>
+
+        <option value="mid" selected>
+          ⚖️ Intermédiaire
+        </option>
+
+        <option value="high">
+          🔥 Forte pression
+        </option>
+
+        <option value="recovery">
+          🌳 Restauration
+        </option>
+
+      </select>
+
+      <button id="stepButton" class="control">
+        +100 ans
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         INDICATEURS
+         =================================================== -->
+
+    <div class="metrics">
+
+      <div class="metric">
+        <div id="temperature" class="metric-value">
+          +1,5 °C
+        </div>
+
+        <div class="metric-label">
+          🌡️ Réchauffement simulé
+        </div>
+      </div>
+
+
+      <div class="metric">
+        <div id="co2" class="metric-value">
+          425 ppm
+        </div>
+
+        <div class="metric-label">
+          🏭 CO₂ atmosphérique indicatif
+        </div>
+      </div>
+
+
+      <div class="metric">
+        <div id="water" class="metric-value">
+          68 %
+        </div>
+
+        <div class="metric-label">
+          💧 Pression sur les ressources en eau
+        </div>
+      </div>
+
+
+      <div class="metric">
+        <div id="biodiversity" class="metric-value">
+          82 %
+        </div>
+
+        <div class="metric-label">
+          🌱 Intégrité écologique
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="info">
+
+      ⚠️ <strong>Important :</strong>
+      cette simulation est un modèle visuel hypothétique.
+      Elle ne constitue pas une prédiction scientifique.
+      Les incertitudes deviennent extrêmement importantes
+      lorsqu'on projette l'avenir sur des milliers ou millions
+      d'années.
+
+      <br><br>
+
+      👆 <strong>Astuce :</strong>
+      fais glisser ton doigt directement sur la Terre pour
+      la faire tourner.
+
+    </div>
+
+  </section>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   TERRE FUTURE
+   MOTEUR COMPLET SANS BIBLIOTHÈQUE EXTERNE
+   ========================================================= */
+
+
+/* =========================================================
+   ÉLÉMENTS HTML
+   ========================================================= */
+
+const canvas =
+  document.getElementById("globe");
+
+const ctx =
+  canvas.getContext("2d");
+
+const globeArea =
+  document.querySelector(".globe-area");
+
+const launchButton =
+  document.getElementById("launchButton");
+
+const playButton =
+  document.getElementById("playButton");
+
+const pauseButton =
+  document.getElementById("pauseButton");
+
+const resetButton =
+  document.getElementById("resetButton");
+
+const stepButton =
+  document.getElementById("stepButton");
+
+const timeline =
+  document.getElementById("timeline");
+
+const scenario =
+  document.getElementById("scenario");
+
+const yearElement =
+  document.getElementById("year");
+
+const scenarioName =
+  document.getElementById("scenarioName");
+
+const temperature =
+  document.getElementById("temperature");
+
+const co2 =
+  document.getElementById("co2");
+
+const water =
+  document.getElementById("water");
+
+const biodiversity =
+  document.getElementById("biodiversity");
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let year = 2026;
+
+let running = false;
+
+let animationFrame = null;
+
+let rotation = 0;
+
+let rotationVelocity = 0.002;
+
+let dragging = false;
+
+let lastPointerX = 0;
+
+let deviceScale = 1;
+
+
+/* =========================================================
+   NOMS DES SCÉNARIOS
+   ========================================================= */
+
+const scenarioNames = {
+
+  low:
+    "🌱 Transition rapide",
+
+  mid:
+    "⚖️ Scénario intermédiaire",
+
+  high:
+    "🔥 Forte pression",
+
+  recovery:
+    "🌳 Restauration"
+
+};
+
+
+/* =========================================================
+   REDIMENSIONNEMENT DU CANVAS
+   ========================================================= */
+
+function resizeCanvas() {
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+  deviceScale =
+    Math.min(window.devicePixelRatio || 1, 2);
+
+  canvas.width =
+    Math.max(1, Math.floor(rect.width * deviceScale));
+
+  canvas.height =
+    Math.max(1, Math.floor(rect.height * deviceScale));
+
+  ctx.setTransform(
+    deviceScale,
+    0,
+    0,
+    deviceScale,
+    0,
+    0
+  );
+
+  drawGlobe();
+}
+
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+
+/* =========================================================
+   NORMALISATION DU TEMPS
+   ========================================================= */
+
+function progress() {
+
+  return Math.max(
+    0,
+    Math.min(
+      1,
+      (year - 2026) /
+      (1000000 - 2026)
+    )
+  );
+
+}
+
+
+/* =========================================================
+   CALCUL DES INDICATEURS
+   ========================================================= */
+
+function calculateIndicators() {
+
+  const p = progress();
+
+  let pressure;
+
+  switch (scenario.value) {
+
+    case "low":
+      pressure = 0.55;
+      break;
+
+    case "high":
+      pressure = 1.30;
+      break;
+
+    case "recovery":
+      pressure = 0.25;
+      break;
+
+    default:
+      pressure = 0.85;
+
+  }
+
+
+  /*
+   * Échelle logarithmique :
+   * elle permet de visualiser des changements
+   * sur une période allant de quelques années
+   * jusqu'à 1 million d'années.
+   */
+
+  const longTerm =
+    Math.log10(
+      1 + p * 999999
+    );
+
+
+  let temp =
+    1.5 +
+    longTerm *
+    1.45 *
+    pressure;
+
+
+  let atmosphericCO2 =
+    425 +
+    Math.round(
+      215 *
+      Math.pow(p, 0.45) *
+      pressure
+    );
+
+
+  let waterPressure =
+    68 +
+    24 *
+    Math.pow(p, 0.35) *
+    pressure;
+
+
+  let ecologicalIntegrity =
+    82 -
+    57 *
+    Math.pow(p, 0.30) *
+    pressure;
+
+
+  /*
+   * Scénario de restauration
+   */
+
+  if (scenario.value === "recovery") {
+
+    waterPressure -=
+      35 * p;
+
+    ecologicalIntegrity +=
+      45 * p;
+
+  }
+
+
+  /*
+   * Limites visuelles
+   */
+
+  waterPressure =
+    Math.max(
+      5,
+      Math.min(
+        99,
+        waterPressure
+      )
+    );
+
+
+  ecologicalIntegrity =
+    Math.max(
+      5,
+      Math.min(
+        98,
+        ecologicalIntegrity
+      )
+    );
+
+
+  return {
+
+    temperature: temp,
+
+    co2: atmosphericCO2,
+
+    water: waterPressure,
+
+    biodiversity: ecologicalIntegrity
+
+  };
+
+}
+
+
+/* =========================================================
+   MISE À JOUR DE L'INTERFACE
+   ========================================================= */
+
+function updateInterface() {
+
+  const values =
+    calculateIndicators();
+
+
+  yearElement.textContent =
+    year.toLocaleString("fr-FR");
+
+
+  scenarioName.textContent =
+    scenarioNames[scenario.value];
+
+
+  temperature.textContent =
+    "+" +
+    values.temperature.toFixed(1) +
+    " °C";
+
+
+  co2.textContent =
+    values.co2.toLocaleString("fr-FR") +
+    " ppm";
+
+
+  water.textContent =
+    Math.round(values.water) +
+    " %";
+
+
+  biodiversity.textContent =
+    Math.round(values.biodiversity) +
+    " %";
+
+
+  timeline.value =
+    year;
+
+}
+
+
+/* =========================================================
+   DESSIN DU GLOBE
+   ========================================================= */
+
+function drawGlobe() {
+
+  const width =
+    canvas.clientWidth;
+
+  const height =
+    canvas.clientHeight;
+
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
+    return;
+  }
+
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  const centerX =
+    width / 2;
+
+  const centerY =
+    height / 2;
+
+
+  const radius =
+    Math.min(
+      width,
+      height
+    ) * 0.36;
+
+
+  /* =========================================
+     HALO ATMOSPHÉRIQUE
+     ========================================= */
+
+  const halo =
+    ctx.createRadialGradient(
+      centerX,
+      centerY,
+      radius * 0.75,
+      centerX,
+      centerY,
+      radius * 1.3
+    );
+
+
+  halo.addColorStop(
+    0,
+    "rgba(60,170,255,0)"
+  );
+
+  halo.addColorStop(
+    0.75,
+    "rgba(60,170,255,.10)"
+  );
+
+  halo.addColorStop(
+    1,
+    "rgba(60,170,255,.28)"
+  );
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    centerX,
+    centerY,
+    radius * 1.18,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle =
+    halo;
+
+  ctx.fill();
+
+
+  /* =========================================
+     TERRE
+     ========================================= */
+
+  const ocean =
+    ctx.createRadialGradient(
+      centerX - radius * .35,
+      centerY - radius * .35,
+      radius * .05,
+      centerX,
+      centerY,
+      radius
+    );
+
+
+  ocean.addColorStop(
+    0,
+    "#72c9ff"
+  );
+
+  ocean.addColorStop(
+    .48,
+    "#247dbb"
+  );
+
+  ocean.addColorStop(
+    .85,
+    "#10527f"
+  );
+
+  ocean.addColorStop(
+    1,
+    "#062b4a"
+  );
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle =
+    ocean;
+
+  ctx.fill();
+
+
+  /* =========================================
+     CLIPPING À LA TERRE
+     ========================================= */
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.clip();
+
+
+  /* =========================================
+     NIVEAU DE DÉGRADATION
+     ========================================= */
+
+  const p =
+    progress();
+
+
+  let damage;
+
+  switch (scenario.value) {
+
+    case "low":
+      damage = p * .45;
+      break;
+
+    case "high":
+      damage = p * 1.1;
+      break;
+
+    case "recovery":
+      damage = p * .2;
+      break;
+
+    default:
+      damage = p * .7;
+
+  }
+
+
+  /* =========================================
+     CONTINENTS STYLISÉS
+     ========================================= */
+
+  const continentCount =
+    18;
+
+
+  for (
+    let i = 0;
+    i < continentCount;
+    i++
+  ) {
+
+    const angle =
+      i *
+      Math.PI * 2 /
+      continentCount +
+      rotation;
+
+
+    const x =
+      centerX +
+      Math.sin(angle) *
+      radius *
+      .78;
+
+
+    const latitude =
+      Math.sin(
+        i * 2.17 +
+        rotation * .7
+      ) *
+      radius *
+      .28;
+
+
+    const continentWidth =
+      radius *
+      (
+        .20 +
+        .06 *
+        Math.sin(i * 3.1)
+      );
+
+
+    const continentHeight =
+      radius *
+      (
+        .07 +
+        .025 *
+        Math.cos(i * 2.3)
+      );
+
+
+    ctx.save();
+
+
+    ctx.translate(
+      x,
+      centerY + latitude
+    );
+
+
+    ctx.rotate(
+      angle
+    );
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+      0,
+      0,
+      continentWidth,
+      continentHeight,
+      0,
+      0,
+      Math.PI * 2
+    );
+
+
+    /*
+     * La couleur évolue avec la pression
+     */
+
+    let green =
+      Math.max(
+        70,
+        155 -
+        damage * 90
+      );
+
+
+    let red =
+      55 +
+      damage * 100;
+
+
+    let blue =
+      65 -
+      damage * 35;
+
+
+    ctx.fillStyle =
+      "rgb(" +
+      Math.round(red) +
+      "," +
+      Math.round(green) +
+      "," +
+      Math.round(blue) +
+      ")";
+
+
+    ctx.globalAlpha =
+      .72;
+
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+  }
+
+
+  ctx.globalAlpha = 1;
+
+
+  /* =========================================
+     LIGNES DE LATITUDE
+     ========================================= */
+
+  ctx.strokeStyle =
+    "rgba(255,255,255,.12)";
+
+  ctx.lineWidth = 1;
+
+
+  for (
+    let i = -3;
+    i <= 3;
+    i++
+  ) {
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+      centerX,
+      centerY,
+      radius *
+      Math.cos(
+        i * Math.PI / 8
+      ),
+      radius,
+      0,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+
+  }
+
+
+  /* =========================================
+     LIGNES DE LONGITUDE
+     ========================================= */
+
+  for (
+    let i = 0;
+    i < 8;
+    i++
+  ) {
+
+    const longitude =
+      rotation +
+      i *
+      Math.PI / 4;
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+      centerX,
+      centerY,
+      Math.abs(
+        radius *
+        Math.cos(longitude)
+      ),
+      radius,
+      0,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+
+  }
+
+
+  ctx.restore();
+
+
+  /* =========================================
+     CONTOUR
+     ========================================= */
+
+  ctx.beginPath();
+
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.strokeStyle =
+    "rgba(145,220,255,.65)";
+
+  ctx.lineWidth = 2;
+
+  ctx.stroke();
+
+
+  /* =========================================
+     OMBRE
+     ========================================= */
+
+  const shadow =
+    ctx.createRadialGradient(
+      centerX + radius * .35,
+      centerY + radius * .3,
+      radius * .1,
+      centerX,
+      centerY,
+      radius * 1.05
+    );
+
+
+  shadow.addColorStop(
+    0,
+    "rgba(0,0,0,0)"
+  );
+
+  shadow.addColorStop(
+    1,
+    "rgba(0,0,0,.48)"
+  );
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle =
+    shadow;
+
+  ctx.fill();
+
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+function animationLoop() {
+
+  if (!running) {
+    return;
+  }
+
+
+  /*
+   * Vitesse adaptative.
+   *
+   * On avance rapidement au début
+   * et beaucoup plus rapidement sur
+   * les grandes périodes.
+   */
+
+  let increment;
+
+
+  if (year < 10000) {
+
+    increment = 10;
+
+  } else if (year < 100000) {
+
+    increment = 100;
+
+  } else if (year < 500000) {
+
+    increment = 1000;
+
+  } else {
+
+    increment = 5000;
+
+  }
+
+
+  year += increment;
+
+
+  if (
+    year >= 1000000
+  ) {
+
+    year = 1000000;
+
+    running = false;
+
+    launchButton.style.display =
+      "block";
+
+    launchButton.textContent =
+      "↺ Recommencer";
+
+  }
+
+
+  rotation +=
+    rotationVelocity;
+
+
+  updateInterface();
+
+  drawGlobe();
+
+
+  if (running) {
+
+    animationFrame =
+      requestAnimationFrame(
+        animationLoop
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   DÉMARRER
+   ========================================================= */
+
+function startSimulation() {
+
+  if (
+    year >= 1000000
+  ) {
+
+    year = 2026;
+
+  }
+
+
+  running = true;
+
+  launchButton.style.display =
+    "none";
+
+
+  cancelAnimationFrame(
+    animationFrame
+  );
+
+
+  animationLoop();
+
+}
+
+
+/* =========================================================
+   BOUTONS
+   ========================================================= */
+
+launchButton.addEventListener(
+  "click",
+  startSimulation
+);
+
+
+playButton.addEventListener(
+  "click",
+  startSimulation
+);
+
+
+pauseButton.addEventListener(
+  "click",
+  () => {
+
+    running = false;
+
+    cancelAnimationFrame(
+      animationFrame
+    );
+
+    launchButton.style.display =
+      "block";
+
+    launchButton.textContent =
+      "▶ Reprendre la simulation";
+
+  }
+);
+
+
+resetButton.addEventListener(
+  "click",
+  () => {
+
+    running = false;
+
+    cancelAnimationFrame(
+      animationFrame
+    );
+
+    year = 2026;
+
+    rotation = 0;
+
+    launchButton.style.display =
+      "block";
+
+    launchButton.textContent =
+      "▶ Lancer la simulation";
+
+    updateInterface();
+
+    drawGlobe();
+
+  }
+);
+
+
+stepButton.addEventListener(
+  "click",
+  () => {
+
+    running = false;
+
+    cancelAnimationFrame(
+      animationFrame
+    );
+
+    year =
+      Math.min(
+        1000000,
+        year + 100
+      );
+
+    launchButton.style.display =
+      "block";
+
+    updateInterface();
+
+    drawGlobe();
+
+  }
+);
+
+
+/* =========================================================
+   CURSEUR
+   ========================================================= */
+
+timeline.addEventListener(
+  "input",
+  () => {
+
+    running = false;
+
+    cancelAnimationFrame(
+      animationFrame
+    );
+
+    year =
+      Number(
+        timeline.value
+      );
+
+    launchButton.style.display =
+      "block";
+
+    launchButton.textContent =
+      "▶ Lancer la simulation";
+
+    updateInterface();
+
+    drawGlobe();
+
+  }
+);
+
+
+/* =========================================================
+   SCÉNARIOS
+   ========================================================= */
+
+scenario.addEventListener(
+  "change",
+  () => {
+
+    updateInterface();
+
+    drawGlobe();
+
+  }
+);
+
+
+/* =========================================================
+   ROTATION DU GLOBE AVEC LE DOIGT
+   ========================================================= */
+
+canvas.addEventListener(
+  "pointerdown",
+  event => {
+
+    dragging = true;
+
+    lastPointerX =
+      event.clientX;
+
+    canvas.setPointerCapture(
+      event.pointerId
+    );
+
+  }
+);
+
+
+canvas.addEventListener(
+  "pointermove",
+  event => {
+
+    if (!dragging) {
+      return;
+    }
+
+
+    const delta =
+      event.clientX -
+      lastPointerX;
+
+
+    rotation +=
+      delta * .012;
+
+
+    lastPointerX =
+      event.clientX;
+
+
+    drawGlobe();
+
+  }
+);
+
+
+canvas.addEventListener(
+  "pointerup",
+  () => {
+
+    dragging = false;
+
+  }
+);
+
+
+canvas.addEventListener(
+  "pointercancel",
+  () => {
+
+    dragging = false;
+
+  }
+);
+
+
+/* =========================================================
+   INITIALISATION
+   ========================================================= */
+
+updateInterface();
+
+resizeCanvas();
+
+</script>
+
+</body>
+</html>
