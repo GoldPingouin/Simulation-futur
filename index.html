@@ -1,0 +1,2661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1,
+      maximum-scale=1,
+      user-scalable=no,
+      viewport-fit=cover">
+
+<meta name="theme-color" content="#020914">
+
+<meta name="description"
+      content="Terre Future — simulation interactive de tectonique, climat, séismes, tsunamis, volcans et impacts d'astéroïdes.">
+
+<title>🌍 Terre Future — Simulation scientifique</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      #102b46 0%,
+      #030a13 48%,
+      #01040a 100%
+    );
+
+  color: white;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    16px
+    12px;
+
+  background: rgba(2,9,20,.88);
+
+  backdrop-filter: blur(18px);
+
+  border-bottom:
+    1px solid rgba(255,255,255,.08);
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.status {
+  font-size: 10px;
+  color: #9fc4e6;
+
+  border:
+    1px solid #31516f;
+
+  border-radius: 20px;
+
+  padding: 6px 9px;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+main {
+  width: min(1100px, 100%);
+  margin: auto;
+
+  padding:
+    10px
+    12px
+    40px;
+}
+
+/* =========================================================
+   GLOBE
+========================================================= */
+
+.globe-area {
+  position: relative;
+
+  width: 100%;
+
+  height:
+    min(70vh, 700px);
+
+  min-height: 360px;
+
+  overflow: hidden;
+
+  border-radius: 28px;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(25,75,120,.18),
+      rgba(0,0,0,0) 55%
+    );
+}
+
+#globe {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+}
+
+#launchButton {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 10;
+
+  min-width: 225px;
+
+  padding: 17px 22px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #cdeaff
+    );
+
+  color: #04101d;
+
+  font-size: 15px;
+
+  font-weight: 900;
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.55),
+    0 0 35px rgba(80,180,255,.18);
+}
+
+#launchButton:active {
+  transform:
+    translate(-50%, -50%)
+    scale(.96);
+}
+
+/* =========================================================
+   ÉVÉNEMENTS
+========================================================= */
+
+.event-overlay {
+  position: absolute;
+
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  z-index: 5;
+
+  padding: 12px;
+
+  border-radius: 15px;
+
+  background:
+    rgba(2,10,19,.78);
+
+  backdrop-filter: blur(12px);
+
+  border:
+    1px solid rgba(255,255,255,.1);
+
+  font-size: 12px;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform:
+    translateY(10px);
+
+  transition:
+    .25s ease;
+}
+
+.event-overlay.visible {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.event-title {
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.event-description {
+  color: #a8bfd3;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   PANNEAU
+========================================================= */
+
+.panel {
+  margin-top: 12px;
+
+  background:
+    rgba(10,25,42,.92);
+
+  border:
+    1px solid #203b57;
+
+  border-radius: 20px;
+
+  padding: 15px;
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.25);
+}
+
+.year-line {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.year {
+  font-size: 32px;
+
+  font-weight: 900;
+
+  letter-spacing: -1px;
+}
+
+.scenario-name {
+  color: #91abc2;
+
+  font-size: 12px;
+
+  margin-top: 2px;
+}
+
+.small-button {
+  border:
+    1px solid #2c4b69;
+
+  background:
+    #122a43;
+
+  color: white;
+
+  padding:
+    10px
+    12px;
+
+  border-radius: 12px;
+
+  font-weight: 800;
+}
+
+.timeline {
+  width: 100%;
+
+  margin-top: 14px;
+
+  accent-color: #55b7ff;
+}
+
+/* =========================================================
+   CONTRÔLES
+========================================================= */
+
+.controls {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.control {
+  min-height: 45px;
+
+  border:
+    1px solid #2b4965;
+
+  border-radius: 12px;
+
+  background:
+    #122941;
+
+  color: white;
+
+  font-weight: 800;
+}
+
+.control:active {
+  transform: scale(.98);
+}
+
+select.control {
+  padding: 0 10px;
+}
+
+/* =========================================================
+   INDICATEURS
+========================================================= */
+
+.metrics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.metric {
+  background:
+    #071522;
+
+  border-radius: 14px;
+
+  padding: 12px;
+
+  min-height: 90px;
+}
+
+.metric-value {
+  font-size: 20px;
+
+  font-weight: 900;
+
+  margin-bottom: 4px;
+}
+
+.metric-label {
+  color: #8ea8bf;
+
+  font-size: 11px;
+
+  line-height: 1.35;
+}
+
+/* =========================================================
+   SCIENCE
+========================================================= */
+
+.science {
+  margin-top: 12px;
+
+  padding: 14px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(50,130,190,.12),
+      rgba(20,50,80,.08)
+    );
+
+  border:
+    1px solid rgba(100,180,230,.15);
+}
+
+.science-title {
+  font-size: 14px;
+
+  font-weight: 900;
+
+  margin-bottom: 9px;
+}
+
+.science-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 5px 0;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.045);
+
+  font-size: 11px;
+}
+
+.science-row:last-child {
+  border-bottom: none;
+}
+
+.science-label {
+  color: #8ca7bd;
+}
+
+.science-value {
+  text-align: right;
+
+  color: #dceeff;
+}
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.info {
+  margin-top: 11px;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(75,140,190,.07);
+
+  color: #91abc0;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 700px) {
+
+  main {
+    padding:
+      20px
+      20px
+      50px;
+  }
+
+  .globe-area {
+    height: 650px;
+  }
+
+  .metrics {
+    grid-template-columns:
+      repeat(4, 1fr);
+  }
+
+  .controls {
+    grid-template-columns:
+      repeat(4, 1fr);
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+  <div class="logo">
+    🌍 Terre Future
+  </div>
+
+  <div class="status">
+    Simulation scientifique
+  </div>
+
+</header>
+
+<main>
+
+<section class="globe-area">
+
+  <canvas id="globe"></canvas>
+
+  <button id="launchButton">
+    ▶ Lancer la simulation
+  </button>
+
+  <div
+    id="eventOverlay"
+    class="event-overlay">
+
+    <div
+      id="eventTitle"
+      class="event-title">
+    </div>
+
+    <div
+      id="eventDescription"
+      class="event-description">
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="panel">
+
+  <div class="year-line">
+
+    <div>
+
+      <div
+        id="year"
+        class="year">
+        2026
+      </div>
+
+      <div
+        id="scenarioName"
+        class="scenario-name">
+        ⚖️ Scénario intermédiaire
+      </div>
+
+    </div>
+
+    <button
+      id="resetButton"
+      class="small-button">
+      ↺ 2026
+    </button>
+
+  </div>
+
+
+  <input
+    id="timeline"
+    class="timeline"
+    type="range"
+    min="2026"
+    max="1000000"
+    step="1"
+    value="2026">
+
+
+  <div class="controls">
+
+    <button
+      id="playButton"
+      class="control">
+      ▶ Lecture
+    </button>
+
+    <button
+      id="pauseButton"
+      class="control">
+      ⏸ Pause
+    </button>
+
+    <select
+      id="scenario"
+      class="control">
+
+      <option value="low">
+        🌱 Faible pression
+      </option>
+
+      <option value="mid" selected>
+        ⚖️ Intermédiaire
+      </option>
+
+      <option value="high">
+        🔥 Forte pression
+      </option>
+
+      <option value="recovery">
+        🌳 Restauration
+      </option>
+
+    </select>
+
+    <button
+      id="stepButton"
+      class="control">
+      +100 ans
+    </button>
+
+  </div>
+
+
+  <div class="metrics">
+
+    <div class="metric">
+
+      <div
+        id="temperature"
+        class="metric-value">
+        +1,5 °C
+      </div>
+
+      <div class="metric-label">
+        🌡️ Anomalie climatique
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div
+        id="co2"
+        class="metric-value">
+        425 ppm
+      </div>
+
+      <div class="metric-label">
+        🏭 CO₂ indicatif
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div
+        id="earthquake"
+        class="metric-value">
+        —
+      </div>
+
+      <div class="metric-label">
+        🌎 Dernier séisme simulé
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div
+        id="asteroid"
+        class="metric-value">
+        —
+      </div>
+
+      <div class="metric-label">
+        ☄️ Dernier impact ≥50 m
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="science">
+
+    <div class="science-title">
+      🔬 État scientifique
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Plaques tectoniques
+      </span>
+
+      <span
+        id="plateStatus"
+        class="science-value">
+        Cinématique simplifiée
+      </span>
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Vitesse tectonique
+      </span>
+
+      <span
+        id="plateSpeed"
+        class="science-value">
+        quelques cm/an
+      </span>
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Séismes
+      </span>
+
+      <span
+        id="quakeStatus"
+        class="science-value">
+        probabilistes
+      </span>
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Tsunamis
+      </span>
+
+      <span
+        id="tsunamiStatus"
+        class="science-value">
+        événements conditionnels
+      </span>
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Astéroïdes ≥50 m
+      </span>
+
+      <span
+        id="asteroidStatus"
+        class="science-value">
+        ~1 / 1000 ans
+      </span>
+    </div>
+
+    <div class="science-row">
+      <span class="science-label">
+        Prédiction exacte
+      </span>
+
+      <span class="science-value">
+        ❌ impossible
+      </span>
+    </div>
+
+  </div>
+
+
+  <div class="info">
+
+    ⚠️ <strong>Attention :</strong>
+    cette application est une simulation pédagogique.
+    Les mouvements tectoniques utilisent des paramètres
+    simplifiés, tandis que les séismes, tsunamis,
+    éruptions et impacts sont générés statistiquement.
+
+    <br><br>
+
+    Une simulation sur 1 000 000 d'années ne constitue
+    donc pas une prédiction scientifique de l'avenir.
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script type="module">
+
+/*
+============================================================
+TERRE FUTURE
+Version GitHub Pages
+============================================================
+*/
+
+
+/* =========================================================
+   IMPORTS
+========================================================= */
+
+import * as THREE from
+  "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+import {
+  OrbitControls
+} from
+  "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const canvas =
+  document.getElementById("globe");
+
+const launchButton =
+  document.getElementById("launchButton");
+
+const playButton =
+  document.getElementById("playButton");
+
+const pauseButton =
+  document.getElementById("pauseButton");
+
+const resetButton =
+  document.getElementById("resetButton");
+
+const stepButton =
+  document.getElementById("stepButton");
+
+const timeline =
+  document.getElementById("timeline");
+
+const scenario =
+  document.getElementById("scenario");
+
+const yearElement =
+  document.getElementById("year");
+
+const scenarioName =
+  document.getElementById("scenarioName");
+
+const temperature =
+  document.getElementById("temperature");
+
+const co2 =
+  document.getElementById("co2");
+
+const earthquake =
+  document.getElementById("earthquake");
+
+const asteroid =
+  document.getElementById("asteroid");
+
+const eventOverlay =
+  document.getElementById("eventOverlay");
+
+const eventTitle =
+  document.getElementById("eventTitle");
+
+const eventDescription =
+  document.getElementById("eventDescription");
+
+const plateSpeed =
+  document.getElementById("plateSpeed");
+
+const quakeStatus =
+  document.getElementById("quakeStatus");
+
+const tsunamiStatus =
+  document.getElementById("tsunamiStatus");
+
+const asteroidStatus =
+  document.getElementById("asteroidStatus");
+
+
+/* =========================================================
+   ETAT
+========================================================= */
+
+let year = 2026;
+
+let running = false;
+
+let lastRealTime =
+  performance.now();
+
+
+/* =========================================================
+   THREE.JS
+========================================================= */
+
+const renderer =
+  new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true
+  });
+
+
+renderer.setPixelRatio(
+  Math.min(
+    window.devicePixelRatio || 1,
+    2
+  )
+);
+
+
+renderer.setSize(
+  canvas.clientWidth,
+  canvas.clientHeight,
+  false
+);
+
+
+renderer.outputColorSpace =
+  THREE.SRGBColorSpace;
+
+
+const scene =
+  new THREE.Scene();
+
+
+const camera =
+  new THREE.PerspectiveCamera(
+    38,
+    canvas.clientWidth /
+    canvas.clientHeight,
+    .1,
+    100
+  );
+
+
+camera.position.set(
+  0,
+  0,
+  4.1
+);
+
+
+const controls =
+  new OrbitControls(
+    camera,
+    renderer.domElement
+  );
+
+
+controls.enableDamping = true;
+
+controls.dampingFactor = .06;
+
+controls.minDistance = 2.7;
+
+controls.maxDistance = 7;
+
+controls.enablePan = false;
+
+
+/* =========================================================
+   LUMIÈRE
+========================================================= */
+
+scene.add(
+  new THREE.AmbientLight(
+    0x6f9fc8,
+    1.25
+  )
+);
+
+
+const sun =
+  new THREE.DirectionalLight(
+    0xffffff,
+    2.8
+  );
+
+
+sun.position.set(
+  -5,
+  2,
+  5
+);
+
+
+scene.add(
+  sun
+);
+
+
+/* =========================================================
+   ÉTOILES
+========================================================= */
+
+function createStars() {
+
+  const count = 3000;
+
+  const positions =
+    new Float32Array(
+      count * 3
+    );
+
+
+  for (
+    let i = 0;
+    i < count;
+    i++
+  ) {
+
+    const radius =
+      18 +
+      Math.random() * 25;
+
+    const theta =
+      Math.random() *
+      Math.PI * 2;
+
+    const phi =
+      Math.acos(
+        2 *
+        Math.random() -
+        1
+      );
+
+
+    positions[i * 3] =
+      radius *
+      Math.sin(phi) *
+      Math.cos(theta);
+
+    positions[i * 3 + 1] =
+      radius *
+      Math.cos(phi);
+
+    positions[i * 3 + 2] =
+      radius *
+      Math.sin(phi) *
+      Math.sin(theta);
+
+  }
+
+
+  const geometry =
+    new THREE.BufferGeometry();
+
+
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+      positions,
+      3
+    )
+  );
+
+
+  const material =
+    new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: .025,
+      transparent: true,
+      opacity: .8
+    });
+
+
+  scene.add(
+    new THREE.Points(
+      geometry,
+      material
+    )
+  );
+
+}
+
+
+createStars();
+
+
+/* =========================================================
+   TERRE
+========================================================= */
+
+const earthGroup =
+  new THREE.Group();
+
+
+scene.add(
+  earthGroup
+);
+
+
+const earthGeometry =
+  new THREE.SphereGeometry(
+    1.55,
+    96,
+    96
+  );
+
+
+const loader =
+  new THREE.TextureLoader();
+
+
+const earthTexture =
+  loader.load(
+    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
+  );
+
+
+earthTexture.colorSpace =
+  THREE.SRGBColorSpace;
+
+
+const earthNormal =
+  loader.load(
+    "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"
+  );
+
+
+const earthSpecular =
+  loader.load(
+    "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"
+  );
+
+
+const earthMaterial =
+  new THREE.MeshPhongMaterial({
+
+    map:
+      earthTexture,
+
+    normalMap:
+      earthNormal,
+
+    specularMap:
+      earthSpecular,
+
+    specular:
+      new THREE.Color(
+        0x447799
+      ),
+
+    shininess:
+      18
+
+  });
+
+
+const earth =
+  new THREE.Mesh(
+    earthGeometry,
+    earthMaterial
+  );
+
+
+earthGroup.add(
+  earth
+);
+
+
+/* =========================================================
+   ATMOSPHERE
+========================================================= */
+
+const atmosphere =
+  new THREE.Mesh(
+
+    new THREE.SphereGeometry(
+      1.64,
+      64,
+      64
+    ),
+
+    new THREE.MeshBasicMaterial({
+
+      color:
+        0x3ea9ff,
+
+      transparent:
+        true,
+
+      opacity:
+        .12,
+
+      side:
+        THREE.BackSide
+
+    })
+
+  );
+
+
+earthGroup.add(
+  atmosphere
+);
+
+
+/* =========================================================
+   COORDONNÉES
+========================================================= */
+
+function latLonToVector3(
+  lat,
+  lon,
+  radius = 1.575
+) {
+
+  const phi =
+    (90 - lat) *
+    Math.PI /
+    180;
+
+  const theta =
+    (lon + 180) *
+    Math.PI /
+    180;
+
+
+  return new THREE.Vector3(
+
+    -radius *
+    Math.sin(phi) *
+    Math.cos(theta),
+
+    radius *
+    Math.cos(phi),
+
+    radius *
+    Math.sin(phi) *
+    Math.sin(theta)
+
+  );
+
+}
+
+
+/* =========================================================
+   PLAQUES
+========================================================= */
+
+const plates = [
+
+  {
+    name: "Pacifique",
+    speed: 7.5,
+    bearing: 300,
+    center: [0, -145]
+  },
+
+  {
+    name: "Nord-Américaine",
+    speed: 2.0,
+    bearing: 270,
+    center: [40, -100]
+  },
+
+  {
+    name: "Sud-Américaine",
+    speed: 2.5,
+    bearing: 270,
+    center: [-15, -60]
+  },
+
+  {
+    name: "Africaine",
+    speed: 2.5,
+    bearing: 0,
+    center: [5, 20]
+  },
+
+  {
+    name: "Eurasienne",
+    speed: 2.0,
+    bearing: 30,
+    center: [50, 80]
+  },
+
+  {
+    name: "Indo-Australienne",
+    speed: 5.0,
+    bearing: 20,
+    center: [-20, 100]
+  },
+
+  {
+    name: "Antarctique",
+    speed: 1.5,
+    bearing: 0,
+    center: [-75, 0]
+  },
+
+  {
+    name: "Nazca",
+    speed: 7.0,
+    bearing: 85,
+    center: [-15, -105]
+  }
+
+];
+
+
+const plateGroup =
+  new THREE.Group();
+
+
+earthGroup.add(
+  plateGroup
+);
+
+
+plates.forEach(
+  plate => {
+
+    const position =
+      latLonToVector3(
+        plate.center[0],
+        plate.center[1],
+        1.585
+      );
+
+
+    const marker =
+      new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+          .035,
+          12,
+          12
+        ),
+
+        new THREE.MeshBasicMaterial({
+          color:
+            0xff7043
+        })
+
+      );
+
+
+    marker.position.copy(
+      position
+    );
+
+
+    marker.userData.plate =
+      plate;
+
+
+    plateGroup.add(
+      marker
+    );
+
+  }
+);
+
+
+/* =========================================================
+   FRONTIÈRES
+========================================================= */
+
+const boundaryGroup =
+  new THREE.Group();
+
+
+earthGroup.add(
+  boundaryGroup
+);
+
+
+function createBoundary(
+  points,
+  color
+) {
+
+  const positions = [];
+
+
+  points.forEach(
+    point => {
+
+      const vector =
+        latLonToVector3(
+          point[0],
+          point[1],
+          1.59
+        );
+
+
+      positions.push(
+        vector.x,
+        vector.y,
+        vector.z
+      );
+
+    }
+  );
+
+
+  const geometry =
+    new THREE.BufferGeometry();
+
+
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+      positions,
+      3
+    )
+  );
+
+
+  const material =
+    new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: .75
+    });
+
+
+  boundaryGroup.add(
+    new THREE.Line(
+      geometry,
+      material
+    )
+  );
+
+}
+
+
+createBoundary(
+  [
+    [-55,-20],
+    [-35,-25],
+    [-15,-30],
+    [5,-30],
+    [25,-30],
+    [45,-25],
+    [65,-15]
+  ],
+  0x43e6ff
+);
+
+
+createBoundary(
+  [
+    [60,-150],
+    [45,-145],
+    [25,-130],
+    [0,-115],
+    [-25,-105],
+    [-45,-80],
+    [-55,-70]
+  ],
+  0xff6a42
+);
+
+
+/* =========================================================
+   VOLCANS
+========================================================= */
+
+const volcanoGroup =
+  new THREE.Group();
+
+
+earthGroup.add(
+  volcanoGroup
+);
+
+
+const volcanoLocations = [
+
+  [55,-160],
+  [40,-125],
+  [0,-80],
+  [-20,-70],
+  [5,120],
+  [25,140],
+  [45,145],
+  [0,150]
+
+];
+
+
+volcanoLocations.forEach(
+  location => {
+
+    const position =
+      latLonToVector3(
+        location[0],
+        location[1],
+        1.61
+      );
+
+
+    const volcano =
+      new THREE.Mesh(
+
+        new THREE.ConeGeometry(
+          .025,
+          .08,
+          8
+        ),
+
+        new THREE.MeshBasicMaterial({
+          color:
+            0xff4d35
+        })
+
+      );
+
+
+    volcano.position.copy(
+      position
+    );
+
+
+    volcano.lookAt(
+      position.clone()
+        .multiplyScalar(2)
+    );
+
+
+    volcanoGroup.add(
+      volcano
+    );
+
+  }
+);
+
+
+/* =========================================================
+   ASTÉROÏDES
+========================================================= */
+
+const asteroidGroup =
+  new THREE.Group();
+
+
+scene.add(
+  asteroidGroup
+);
+
+
+const activeAsteroids = [];
+
+
+function createAsteroid(
+  diameter
+) {
+
+  const size =
+    Math.max(
+      .025,
+      Math.min(
+        .16,
+        .025 +
+        Math.log10(
+          diameter / 50 + 1
+        ) *
+        .05
+      )
+    );
+
+
+  const mesh =
+    new THREE.Mesh(
+
+      new THREE.IcosahedronGeometry(
+        size,
+        1
+      ),
+
+      new THREE.MeshStandardMaterial({
+        color:
+          0x88827c,
+        roughness:
+          .95
+      })
+
+    );
+
+
+  mesh.position.set(
+    (Math.random() - .5) * 8,
+    (Math.random() - .5) * 5,
+    -8
+  );
+
+
+  asteroidGroup.add(
+    mesh
+  );
+
+
+  activeAsteroids.push({
+
+    mesh,
+
+    diameter,
+
+    speed:
+      1.5 +
+      Math.random() * 2.5
+
+  });
+
+}
+
+
+/* =========================================================
+   POISSON
+========================================================= */
+
+function poisson(
+  lambda
+) {
+
+  if (
+    lambda <= 0
+  ) {
+
+    return 0;
+
+  }
+
+
+  const limit =
+    Math.exp(-lambda);
+
+  let product = 1;
+
+  let count = 0;
+
+
+  do {
+
+    count++;
+
+    product *=
+      Math.random();
+
+  }
+  while (
+    product > limit
+  );
+
+
+  return count - 1;
+
+}
+
+
+/* =========================================================
+   ÉVÉNEMENTS
+========================================================= */
+
+let lastMagnitude = null;
+
+let lastAsteroid = null;
+
+
+function showEvent(
+  title,
+  description
+) {
+
+  eventTitle.textContent =
+    title;
+
+  eventDescription.textContent =
+    description;
+
+
+  eventOverlay.classList.add(
+    "visible"
+  );
+
+
+  clearTimeout(
+    showEvent.timer
+  );
+
+
+  showEvent.timer =
+    setTimeout(
+      () => {
+
+        eventOverlay.classList.remove(
+          "visible"
+        );
+
+      },
+      5000
+    );
+
+}
+
+
+/* =========================================================
+   SÉISMES
+========================================================= */
+
+function simulateEarthquake(
+  years
+) {
+
+  /*
+   * Paramètre pédagogique :
+   * environ 140 séismes M6+ / an.
+   */
+
+  const lambda =
+    140 *
+    years;
+
+
+  const count =
+    poisson(
+      lambda
+    );
+
+
+  if (
+    count <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  let magnitude =
+    6 +
+    -Math.log(
+      Math.random()
+    ) *
+    .55;
+
+
+  magnitude =
+    Math.min(
+      9.5,
+      magnitude
+    );
+
+
+  lastMagnitude =
+    magnitude;
+
+
+  earthquake.textContent =
+    "M " +
+    magnitude.toFixed(1);
+
+
+  const tsunamiChance =
+    magnitude >= 8
+      ? .25
+      : magnitude >= 7.5
+        ? .10
+        : .015;
+
+
+  if (
+    Math.random() <
+    tsunamiChance
+  ) {
+
+    tsunamiStatus.textContent =
+      "🌊 tsunami simulé";
+
+
+    showEvent(
+      "🌊 Tsunami potentiel",
+      "Un séisme majeur a été généré par le modèle statistique."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ASTÉROÏDES
+========================================================= */
+
+function simulateAsteroid(
+  years
+) {
+
+  /*
+   * Ordre de grandeur pédagogique :
+   * ~1 impact / 1000 ans pour un objet
+   * d'environ 50 m.
+   */
+
+  const count =
+    poisson(
+      years / 1000
+    );
+
+
+  if (
+    count <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  let largest =
+    50;
+
+
+  for (
+    let i = 0;
+    i < count;
+    i++
+  ) {
+
+    const diameter =
+      50 *
+      Math.pow(
+        10,
+        Math.random() *
+        1.25
+      );
+
+
+    largest =
+      Math.max(
+        largest,
+        diameter
+      );
+
+  }
+
+
+  lastAsteroid =
+    largest;
+
+
+  asteroid.textContent =
+    formatDistance(
+      largest
+    );
+
+
+  createAsteroid(
+    largest
+  );
+
+
+  showEvent(
+    "☄️ Impact simulé",
+    "Astéroïde d'environ " +
+    formatDistance(largest) +
+    " dans le modèle probabiliste."
+  );
+
+}
+
+
+/* =========================================================
+   FORMAT
+========================================================= */
+
+function formatDistance(
+  meters
+) {
+
+  if (
+    meters >= 1000
+  ) {
+
+    return (
+      meters / 1000
+    ).toFixed(1) +
+    " km";
+
+  }
+
+
+  return (
+    Math.round(meters)
+  ) +
+  " m";
+
+}
+
+
+/* =========================================================
+   CLIMAT
+========================================================= */
+
+function calculateClimate() {
+
+  const progress =
+    Math.max(
+      0,
+      Math.min(
+        1,
+        (
+          year - 2026
+        ) /
+        (
+          1000000 - 2026
+        )
+      )
+    );
+
+
+  let pressure;
+
+
+  switch (
+    scenario.value
+  ) {
+
+    case "low":
+      pressure = .45;
+      break;
+
+    case "high":
+      pressure = 1.25;
+      break;
+
+    case "recovery":
+      pressure = .18;
+      break;
+
+    default:
+      pressure = .8;
+
+  }
+
+
+  const longTerm =
+    Math.log10(
+      1 +
+      progress *
+      999999
+    );
+
+
+  let temp =
+    1.5 +
+    longTerm *
+    .75 *
+    pressure;
+
+
+  let carbon =
+    425 +
+    Math.round(
+      210 *
+      Math.pow(
+        progress,
+        .45
+      ) *
+      pressure
+    );
+
+
+  if (
+    scenario.value ===
+    "recovery"
+  ) {
+
+    temp -=
+      1.1 *
+      progress;
+
+    carbon -=
+      120 *
+      progress;
+
+  }
+
+
+  return {
+
+    temp,
+
+    carbon:
+      Math.max(
+        150,
+        carbon
+      )
+
+  };
+
+}
+
+
+/* =========================================================
+   PLAQUES
+========================================================= */
+
+function updatePlates(
+  years
+) {
+
+  const visualScale =
+    450000;
+
+
+  plates.forEach(
+    plate => {
+
+      const marker =
+        plateGroup.children.find(
+          child =>
+            child.userData.plate ===
+            plate
+        );
+
+
+      if (
+        !marker
+      ) {
+
+        return;
+
+      }
+
+
+      const radians =
+        (
+          plate.speed /
+          100 /
+          6371000
+        ) *
+        years *
+        visualScale;
+
+
+      const bearing =
+        plate.bearing *
+        Math.PI /
+        180;
+
+
+      marker.rotation.y +=
+        radians *
+        Math.cos(
+          bearing
+        );
+
+
+      marker.rotation.x +=
+        radians *
+        Math.sin(
+          bearing
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   INTERFACE
+========================================================= */
+
+function updateInterface() {
+
+  const climate =
+    calculateClimate();
+
+
+  yearElement.textContent =
+    Math.round(
+      year
+    ).toLocaleString(
+      "fr-FR"
+    );
+
+
+  const names = {
+
+    low:
+      "🌱 Faible pression climatique",
+
+    mid:
+      "⚖️ Scénario intermédiaire",
+
+    high:
+      "🔥 Forte pression climatique",
+
+    recovery:
+      "🌳 Restauration"
+
+  };
+
+
+  scenarioName.textContent =
+    names[
+      scenario.value
+    ];
+
+
+  temperature.textContent =
+    "+" +
+    climate.temp.toFixed(1) +
+    " °C";
+
+
+  co2.textContent =
+    Math.round(
+      climate.carbon
+    ).toLocaleString(
+      "fr-FR"
+    ) +
+    " ppm";
+
+
+  timeline.value =
+    year;
+
+
+  const average =
+    plates.reduce(
+      (sum, plate) =>
+        sum +
+        plate.speed,
+      0
+    ) /
+    plates.length;
+
+
+  plateSpeed.textContent =
+    average.toFixed(1) +
+    " cm/an";
+
+
+  quakeStatus.textContent =
+    lastMagnitude
+      ? "M " +
+        lastMagnitude.toFixed(1)
+      : "probabilistes";
+
+
+  asteroidStatus.textContent =
+    lastAsteroid
+      ? formatDistance(
+          lastAsteroid
+        )
+      : "~1 / 1000 ans";
+
+}
+
+
+/* =========================================================
+   AVANCER
+========================================================= */
+
+function advance(
+  years
+) {
+
+  const oldYear =
+    year;
+
+
+  year =
+    Math.min(
+      1000000,
+      year + years
+    );
+
+
+  const delta =
+    year -
+    oldYear;
+
+
+  if (
+    delta <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  updatePlates(
+    delta
+  );
+
+
+  simulateEarthquake(
+    delta
+  );
+
+
+  simulateAsteroid(
+    delta
+  );
+
+
+  updateInterface();
+
+}
+
+
+/* =========================================================
+   ASTÉROÏDES
+========================================================= */
+
+function animateAsteroids(
+  delta
+) {
+
+  for (
+    let i =
+      activeAsteroids.length - 1;
+
+    i >= 0;
+
+    i--
+  ) {
+
+    const item =
+      activeAsteroids[i];
+
+
+    const target =
+      new THREE.Vector3(
+        0,
+        0,
+        0
+      );
+
+
+    const direction =
+      target
+        .sub(
+          item.mesh.position
+        )
+        .normalize();
+
+
+    item.mesh.position.add(
+      direction.multiplyScalar(
+        item.speed *
+        delta
+      )
+    );
+
+
+    item.mesh.rotation.x +=
+      delta *
+      1.4;
+
+
+    item.mesh.rotation.y +=
+      delta *
+      .8;
+
+
+    if (
+      item.mesh.position.length()
+      < 1.65
+    ) {
+
+      asteroidGroup.remove(
+        item.mesh
+      );
+
+
+      item.mesh.geometry.dispose();
+
+      item.mesh.material.dispose();
+
+
+      activeAsteroids.splice(
+        i,
+        1
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   BOUCLE
+========================================================= */
+
+function animate(
+  now
+) {
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const delta =
+    Math.min(
+      .1,
+      (
+        now -
+        lastRealTime
+      ) /
+      1000
+    );
+
+
+  lastRealTime =
+    now;
+
+
+  if (
+    running
+  ) {
+
+    let speed;
+
+
+    if (
+      year < 10000
+    ) {
+
+      speed = 1;
+
+    } else if (
+      year < 100000
+    ) {
+
+      speed = 20;
+
+    } else if (
+      year < 500000
+    ) {
+
+      speed = 500;
+
+    } else {
+
+      speed = 2500;
+
+    }
+
+
+    advance(
+      delta *
+      speed *
+      15
+    );
+
+
+    if (
+      year >= 1000000
+    ) {
+
+      running = false;
+
+      launchButton.style.display =
+        "block";
+
+      launchButton.textContent =
+        "↺ Recommencer";
+
+    }
+
+  }
+
+
+  animateAsteroids(
+    delta
+  );
+
+
+  earth.rotation.y +=
+    delta *
+    .025;
+
+
+  atmosphere.rotation.y +=
+    delta *
+    .015;
+
+
+  controls.update();
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+
+requestAnimationFrame(
+  animate
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resize() {
+
+  const width =
+    canvas.clientWidth;
+
+  const height =
+    canvas.clientHeight;
+
+
+  if (
+    !width ||
+    !height
+  ) {
+
+    return;
+
+  }
+
+
+  camera.aspect =
+    width /
+    height;
+
+
+  camera.updateProjectionMatrix();
+
+
+  renderer.setSize(
+    width,
+    height,
+    false
+  );
+
+}
+
+
+window.addEventListener(
+  "resize",
+  resize
+);
+
+
+resize();
+
+
+/* =========================================================
+   COMMANDES
+========================================================= */
+
+function start() {
+
+  if (
+    year >= 1000000
+  ) {
+
+    reset();
+
+  }
+
+
+  running = true;
+
+  launchButton.style.display =
+    "none";
+
+}
+
+
+function pause() {
+
+  running = false;
+
+  launchButton.style.display =
+    "block";
+
+  launchButton.textContent =
+    "▶ Reprendre";
+
+}
+
+
+function reset() {
+
+  running = false;
+
+  year = 2026;
+
+  lastMagnitude = null;
+
+  lastAsteroid = null;
+
+
+  earthquake.textContent =
+    "—";
+
+
+  asteroid.textContent =
+    "—";
+
+
+  tsunamiStatus.textContent =
+    "événements conditionnels";
+
+
+  activeAsteroids.forEach(
+    item => {
+
+      asteroidGroup.remove(
+        item.mesh
+      );
+
+      item.mesh.geometry.dispose();
+
+      item.mesh.material.dispose();
+
+    }
+  );
+
+
+  activeAsteroids.length = 0;
+
+
+  updateInterface();
+
+
+  launchButton.style.display =
+    "block";
+
+  launchButton.textContent =
+    "▶ Lancer la simulation";
+
+}
+
+
+launchButton.addEventListener(
+  "click",
+  start
+);
+
+
+playButton.addEventListener(
+  "click",
+  start
+);
+
+
+pauseButton.addEventListener(
+  "click",
+  pause
+);
+
+
+resetButton.addEventListener(
+  "click",
+  reset
+);
+
+
+stepButton.addEventListener(
+  "click",
+  () => {
+
+    running = false;
+
+    advance(100);
+
+  }
+);
+
+
+timeline.addEventListener(
+  "input",
+  () => {
+
+    running = false;
+
+    year =
+      Number(
+        timeline.value
+      );
+
+
+    updateInterface();
+
+    launchButton.style.display =
+      "block";
+
+    launchButton.textContent =
+      "▶ Lancer la simulation";
+
+  }
+);
+
+
+scenario.addEventListener(
+  "change",
+  updateInterface
+);
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+updateInterface();
+
+showEvent(
+  "🔬 Simulation prête",
+  "Modèle tectonique, événements géologiques et impacts probabilistes activés."
+);
+
+</script>
+
+</body>
+</html>
